@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useLocation, useRouter } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
+import { CounterTest } from "./components/CounterTest";
+import { Nav } from './components/Nav';
 
-function App() {
+import "./App.css";
+
+const PageTransitionSettings = {
+  transition: { duration: 0.2 },
+  initial: { opacity: 0, x: -20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 20 }
+};
+
+const ExamplePage = () => (
+  <>
+    <h2>Example Header</h2>
+  </>
+);
+
+const routes = {
+  "/": CounterTest,
+  "/example": ExamplePage,
+};
+
+const App = () => {
+  useRouter();
+  const [location] = useLocation();
+  const Route = routes[location];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <Nav />
+      <AnimatePresence initial={false}>
+        <motion.div
+          className="route-container"
+          key={location}
+          {...PageTransitionSettings}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Route />
+        </motion.div>
+      </AnimatePresence>
+    </>
   );
-}
+};
 
 export default App;
